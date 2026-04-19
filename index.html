@@ -49,10 +49,20 @@
     </style>
     <script src="https://bundle.run/buffer@6.0.3"></script>
 <script>
-  // Polyfill Buffer
   window.Buffer = window.Buffer || buffer.Buffer;
+  
+  // CRITICAL: Manual fix for the isUtf8 error
+  if (typeof window.Buffer.isUtf8 === 'undefined') {
+    window.Buffer.isUtf8 = function(obj) {
+      try {
+        new TextDecoder('utf-8', { fatal: true }).decode(obj);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+  }
 
-  // Polyfill Process (Required by Colyseus dependencies)
   window.process = {
     env: { NODE_ENV: 'production' },
     browser: true,
@@ -60,15 +70,12 @@
     nextTick: function (fn) { setTimeout(fn, 0); }
   };
 </script>
-
-<script src="app.js"></script>
-    <script>
-        window.Buffer = window.Buffer || buffer.Buffer;
-    </script>
-
-<script src="https://unpkg.com/@colyseus/sdk@0.17.0/dist/colyseus.js"></script>
-    <script src="https://unpkg.com/colyseus.js@^0.15.0/dist/colyseus.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
+    <script src="https://unpkg.com/colyseus.js@^0.15.0/dist/colyseus.js"></script>
+    <script src="https://unpkg.com/@colyseus/sdk@0.17.0/dist/colyseus.js"></script>
+    <script src="app.js"></script>
+    
 </head>
 <body>
     <div id="login-ui" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(20, 20, 20, 0.95); z-index: 100; display: flex; justify-content: center; align-items: center; flex-direction: column;">
