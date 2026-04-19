@@ -47,49 +47,7 @@
         font-weight: bold;
     }
     </style>
-    <script>
-        // Simple WebSocket mock for local testing
-        window.Colyseus = {
-            Client: class {
-                constructor(url) {
-                    this.url = url;
-                    console.log('Mock Colyseus client created for:', url);
-                }
-
-                async joinOrCreate(roomName, options) {
-                    console.log('Mock joining room:', roomName, options);
-
-                    // Mock players collection
-                    const players = {
-                        onAdd: (callback) => {
-                            console.log('Mock onAdd registered for players');
-                            // Simulate adding current player
-                            setTimeout(() => {
-                                const mockPlayer = {
-                                    team: 0,
-                                    pieceId: 1,
-                                    listen: (prop, callback) => console.log('Mock player listen:', prop)
-                                };
-                                callback(mockPlayer, 'mock-session-' + Date.now());
-                            }, 100);
-                        }
-                    };
-
-                    return {
-                        sessionId: 'mock-session-' + Date.now(),
-                        send: (type, data) => console.log('Mock send:', type, data),
-                        onMessage: (callback) => console.log('Mock onMessage registered'),
-                        state: {
-                            players: players,
-                            listen: (prop, callback) => console.log('Mock state listen:', prop),
-                            currentTurn: 0,
-                            phase: 'waiting'
-                        }
-                    };
-                }
-            }
-        };
-    </script>
+    <script src="https://unpkg.com/colyseus.js@^0.15.0/dist/colyseus.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
 </head>
 <body>
