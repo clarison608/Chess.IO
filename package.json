@@ -6,7 +6,7 @@
   "main": "server/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node lib/server/index.js",
+    "start": "node dist/server/index.js",
     "dev": "ts-node-dev server/index.ts"
   },
   "dependencies": {
