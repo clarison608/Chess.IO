@@ -5,7 +5,9 @@
   "type": "module",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js"
+    "build": "tsc",
+    "start": "node server/index.js",
+    "dev": "ts-node-dev server/index.ts"
   },
   "dependencies": {
     "@colyseus/redis-driver": "^0.17.7",
