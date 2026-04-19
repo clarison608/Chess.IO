@@ -166,7 +166,7 @@ btnHold.onclick = () => {
 
 // --- COLYSEUS SETUP ---
 // Change this to your live server URL when you deploy
-const client = new Colyseus.Client('wss://clarison608.github.io/Chess.IO/');
+const client = new Colyseus.Client('https://chess-io-hkjk.onrender.com');
 
 
 async function connect(playerNickname) {
