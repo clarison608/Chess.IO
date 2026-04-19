@@ -16,17 +16,9 @@ transport.attachToServer(server);
 // Use Redis for presence (tracking players across processes) 
 // and the driver for state storage scaling
 const gameServer = new Server({
-  transport: transport,
-  presence: new RedisPresence({
-    host: process.env.REDIS_HOST || "redis-12163.c57.us-east-1-4.ec2.cloud.redislabs.com",
-    port: Number(process.env.REDIS_PORT) || 12163,
-    password: process.env.REDIS_PASSWORD || "3XNiq40Kqz9h1hLFgSTgZ51MsSFynGoK"
-  }),
-  driver: new RedisDriver({
-    host: process.env.REDIS_HOST || "redis-12163.c57.us-east-1-4.ec2.cloud.redislabs.com",
-    port: Number(process.env.REDIS_PORT) || 12163,
-    password: process.env.REDIS_PASSWORD || "3XNiq40Kqz9h1hLFgSTgZ51MsSFynGoK"
-  }),
+  // Use the env variable Render provides
+  driver: new RedisDriver(process.env.REDIS_URL),
+  presence: new RedisPresence(process.env.REDIS_URL),
 });
 
 gameServer.define("chess_room", ChessRoom);
