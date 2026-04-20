@@ -10,6 +10,7 @@
     "dev": "ts-node-dev server/index.ts"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "@colyseus/redis-driver": "^0.17.7",
     "@colyseus/redis-presence": "^0.17.7",
     "@colyseus/schema": "^4.0.7",
