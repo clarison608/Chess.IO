@@ -10,7 +10,12 @@ import { ChessRoom } from "./room/ChessRoom.js";
 const app = express();
 
 // 1. Middleware
-app.use(cors());
+app.use(cors({
+    origin: "https://clarison608.github.io", // No trailing slash at the end!
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
 const server = createServer(app);
