@@ -34,6 +34,8 @@ const gameServer = new Server({
 gameServer.define("chess_room", ChessRoom);
 
 // 4. Start the server
-server.listen(port, "0.0.0.0", () => {
-    console.log(`✅ Server is listening on port ${port}`);
+gameServer.listen(port, "0.0.0.0").then(() => {
+    console.log(`✅ Colyseus GameServer is listening on port ${port}`);
+}).catch((err) => {
+    console.error("Failed to start server:", err);
 });
