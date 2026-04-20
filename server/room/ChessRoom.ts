@@ -7,6 +7,8 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+import { defineTypes } from '@colyseus/schema';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -754,3 +756,16 @@ this.onMessage("cancel_king_force", (client) => {
         }
     }
 }
+
+// This forces Colyseus to register the schema, completely ignoring TypeScript's decorator rules.
+defineTypes(ChessGameState, {
+    players: { map: Player },
+    pieces: { map: Piece },
+    controlledTiles: { map: "string" },
+    status: "string",
+    currentTurn: "number",
+    turnEndTime: "number",
+    phase: "string",
+    teamPriority: ["string"],
+    stunnedTeams: { map: "uint8" }
+});
