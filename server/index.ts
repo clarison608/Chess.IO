@@ -8,23 +8,22 @@ import { RedisDriver } from "@colyseus/redis-driver";
 import { ChessRoom } from "./room/ChessRoom.js"; 
 
 const app = express();
+
+// 1. Apply CORS to the Express app BEFORE initializing Colyseus
 app.use(cors({
     origin: "https://clarison608.github.io",
-    methods: ["GET", "POST"],
     credentials: true
 }));
 
 const server = createServer(app);
 const port = Number(process.env.PORT) || 2567; 
 
-
-
-// 1. Create the transport and link it to the server
+// 2. Link the transport to the HTTP server
 const transport = new WebSocketTransport({
-  server: server // This tells Colyseus to use your Express server
+  server: server 
 });
 
-// 2. Initialize Colyseus with the transport AND Redis
+// 3. Pass the transport into the Colyseus Server constructor
 const gameServer = new Server({
   transport: transport,
   driver: new RedisDriver(process.env.REDIS_URL),
@@ -33,8 +32,8 @@ const gameServer = new Server({
 
 gameServer.define("chess_room", ChessRoom);
 
-// 3. Start the HTTP server directly
-// This is what Render looks for to detect an "open port"
+// 4. Start the HTTP server directly
+// This is the ONLY place you should call listen()
 server.listen(port, "0.0.0.0", () => {
-    console.log(`Server is listening on port ${port}`);
+    console.log(`✅ Server is listening on port ${port}`);
 });
