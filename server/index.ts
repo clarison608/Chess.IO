@@ -26,8 +26,8 @@ const gameServer = new Server({
   transport: new WebSocketTransport({
     server: server // This allows Colyseus to share the port with Express
   }),
-    //  driver: new RedisDriver(process.env.REDIS_URL),
-    //  presence: new RedisPresence(process.env.REDIS_URL),
+      driver: new RedisDriver(process.env.REDIS_URL),
+      presence: new RedisPresence(process.env.REDIS_URL),
 });
 
 // 3. Define your room
