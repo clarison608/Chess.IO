@@ -3,34 +3,32 @@ import { WebSocketTransport } from "@colyseus/ws-transport";
 import { createServer } from "http";
 import express from "express";
 import cors from "cors";
-import { matchMaker } from "@colyseus/core"; // Import from core
 import { RedisPresence } from "@colyseus/redis-presence";
 import { RedisDriver } from "@colyseus/redis-driver";
 import { ChessRoom } from "./room/ChessRoom.js"; 
 
 const app = express();
 
-// 1. Standard Middleware
+// 1. Middleware
 app.use(cors());
-app.use(express.json()); 
-
-// 2. Attach Matchmaking Routes (This fixes the 404)
-// If TS still complains about getRouter, we use the "any" bypass
-app.use("/matchmake", (matchMaker as any).getRouter()); 
+app.use(express.json());
 
 const server = createServer(app);
 const port = Number(process.env.PORT) || 2567; 
 
+// 2. Initialize Colyseus
 const gameServer = new Server({
   transport: new WebSocketTransport({
-    server: server 
+    server: server // This allows Colyseus to share the port with Express
   }),
   driver: new RedisDriver(process.env.REDIS_URL),
   presence: new RedisPresence(process.env.REDIS_URL),
 });
 
+// 3. Define your room
 gameServer.define("chess_room", ChessRoom);
 
+// 4. Start the server
 server.listen(port, "0.0.0.0", () => {
     console.log(`✅ Server is listening on port ${port}`);
 });
