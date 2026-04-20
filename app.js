@@ -268,6 +268,35 @@ async function connect(playerNickname) {
                 sprite.tint = 0xFFFFFF; // Reset to normal
             }
         });
+
+        room.onMessage("king_force_promotion", (data) => {
+    const forceUI = document.getElementById('king-force-ui');
+    const actionText = document.getElementById('force-action-text'); // Action label
+    const forceTimerText = document.getElementById('force-timer');
+    
+    actionText.innerText = data.action; // e.g., "Unit Reset (Pawn)"
+    
+    let count = data.timer;
+    forceUI.style.display = 'block';
+    forceTimerText.innerText = count;
+
+    clearInterval(forceTimerInterval);
+    forceTimerInterval = setInterval(() => {
+        count--;
+        forceTimerText.innerText = count;
+        if (count <= 0) {
+            clearInterval(forceTimerInterval);
+            forceUI.style.display = 'none';
+            // If they didn't cancel, the server logic will process the promotion/reset
+        }
+    }, 1000);
+
+    btnVeto.onclick = () => {
+        room.send("cancel_king_force");
+        clearInterval(forceTimerInterval);
+        forceUI.style.display = 'none';
+    };
+});
 });
         // 5. Listen for Friendly Fire Pings
         room.onMessage("friendly_fire_ping", (data) => {
@@ -309,34 +338,7 @@ async function connect(playerNickname) {
         console.error("Join error", e);
     }
 
-    room.onMessage("king_force_promotion", (data) => {
-    const forceUI = document.getElementById('king-force-ui');
-    const actionText = document.getElementById('force-action-text'); // Action label
-    const forceTimerText = document.getElementById('force-timer');
     
-    actionText.innerText = data.action; // e.g., "Unit Reset (Pawn)"
-    
-    let count = data.timer;
-    forceUI.style.display = 'block';
-    forceTimerText.innerText = count;
-
-    clearInterval(forceTimerInterval);
-    forceTimerInterval = setInterval(() => {
-        count--;
-        forceTimerText.innerText = count;
-        if (count <= 0) {
-            clearInterval(forceTimerInterval);
-            forceUI.style.display = 'none';
-            // If they didn't cancel, the server logic will process the promotion/reset
-        }
-    }, 1000);
-
-    btnVeto.onclick = () => {
-        room.send("cancel_king_force");
-        clearInterval(forceTimerInterval);
-        forceUI.style.display = 'none';
-    };
-});
 }
 
 // --- RENDERING LOGIC ---
