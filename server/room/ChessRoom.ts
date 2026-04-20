@@ -467,13 +467,13 @@ export class ChessRoom extends Room<ChessRoomOptions> {
 
 
 
-
+// 1. Initialize the state
+        state = new ChessGameState();
 
 
       // The onCreate method runs once when the room/match spins up
     onCreate(options: any) {
-        // 1. Initialize the state
-        this.state = new ChessGameState();
+        
 
         // 2. Load the JSON configuration
         this.loadBoardConfiguration();
