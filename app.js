@@ -188,12 +188,12 @@ async function connect(playerNickname) {
         timerUI.style.display = 'block'; // Unhide the timer!
 
         // 2. Listen for the server assigning our player data
-        Colyseus.Callbacks.get(room).onAdd("players", (player, sessionId) => {
-            if (sessionId === room.sessionId) {
-                console.log(`I am on team: ${player.team}`);
-                myPieceId = player.pieceId; 
-                rotateCamera(player.team);
-            }
+        room.state.players.onAdd((player, sessionId) => {
+    if (sessionId === room.sessionId) {
+        console.log(`I am on team: ${player.team}`);
+        myPieceId = player.pieceId; 
+        rotateCamera(player.team);
+    }
 
             // NEW: Watch for ANY player changing pieces (Spawning, Dying, Promoting)
             player.listen("pieceId", (newPieceId, oldPieceId) => {
