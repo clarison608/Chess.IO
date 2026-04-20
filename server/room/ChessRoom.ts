@@ -6,6 +6,7 @@ import path from "path";
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -472,7 +473,7 @@ export class ChessRoom extends Room<ChessRoomOptions> {
       // The onCreate method runs once when the room/match spins up
     onCreate(options: any) {
         // 1. Initialize the state
-        this.setState(new ChessGameState());
+        this.state = new ChessGameState();
 
         // 2. Load the JSON configuration
         this.loadBoardConfiguration();
