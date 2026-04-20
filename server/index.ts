@@ -2,11 +2,18 @@ import { Server } from "colyseus";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { createServer } from "http";
 import express from "express";
+import cors from "cors";
 import { RedisPresence } from "@colyseus/redis-presence";
 import { RedisDriver } from "@colyseus/redis-driver";
 import { ChessRoom } from "./room/ChessRoom.js"; 
 
 const app = express();
+app.use(cors({
+    origin: "https://clarison608.github.io",
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+
 const server = createServer(app);
 const port = Number(process.env.PORT) || 2567; 
 
