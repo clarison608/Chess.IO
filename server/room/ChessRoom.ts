@@ -757,15 +757,3 @@ this.onMessage("cancel_king_force", (client) => {
     }
 }
 
-// This forces Colyseus to register the schema, completely ignoring TypeScript's decorator rules.
-defineTypes(ChessGameState, {
-    players: { map: Player },
-    pieces: { map: Piece },
-    controlledTiles: { map: "string" },
-    status: "string",
-    currentTurn: "number",
-    turnEndTime: "number",
-    phase: "string",
-    teamPriority: ["string"],
-    stunnedTeams: { map: "uint8" }
-});
