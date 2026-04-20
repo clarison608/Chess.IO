@@ -653,6 +653,15 @@ this.onMessage("cancel_king_force", (client) => {
     onJoin(client: Client, options: any) {
         console.log(`${client.sessionId} joined.`);
 
+        console.log("--- DEBUG: NEW CONNECTION ---");
+        console.log("Does state exist?", this.state !== undefined);
+    
+        // Check if the MapSchema actually initialized
+        console.log("Do players exist in state?", this.state?.players !== undefined);
+    
+        // Dump the raw object structure to the Render logs
+        console.log("Raw state keys:", Object.keys(this.state || {}));
+
         const pieceToAssign = this.findHighestAvailablePiece();
 
         if (!pieceToAssign) {
