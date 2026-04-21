@@ -185,60 +185,48 @@ async function connect(playerNickname) {
         // 1. Draw the initial grid
         drawGrid();
 
+        // 1. Get the Callbacks handler for your room
+        const callbacks = Colyseus.Callbacks.get(room);
+
         timerUI.style.display = 'block'; // Unhide the timer!
 
-        // 2. Listen for the server assigning our player data
-        room.state.players.onAdd((player, sessionId) => {
-    if (sessionId === room.sessionId) {
-        console.log(`I am on team: ${player.team}`);
-        myPieceId = player.pieceId; 
-        rotateCamera(player.team);
-    }
+        // 2. Use the handler to listen to the players map
+        callbacks.onAdd("players", (player, sessionId) => {
+            if (sessionId === room.sessionId) {
+                console.log(`I am on team: ${player.team}`);
+                myPieceId = player.pieceId; 
+                rotateCamera(player.team);
+            }
 
-            // NEW: Watch for ANY player changing pieces (Spawning, Dying, Promoting)
-            player.listen("pieceId", (newPieceId, oldPieceId) => {
-                
-                // If they just claimed a piece, update that piece's text with their name
+            // In 0.17, you also use the callbacks handler for property changes
+            callbacks.listen(player, "pieceId", (newPieceId, oldPieceId) => {
                 if (newPieceId && pieceSprites[newPieceId]) {
                     const sprite = pieceSprites[newPieceId];
-                    // children[2] is the nameText we just added!
                     sprite.children[2].text = player.nickname; 
                 }
 
-                // If they abandoned a piece (e.g., promoted or died), clear the text
                 if (oldPieceId && pieceSprites[oldPieceId]) {
                     const oldSprite = pieceSprites[oldPieceId];
                     oldSprite.children[2].text = "";
                 }
 
-                // If this is OUR player, keep our internal tracker updated
                 if (sessionId === room.sessionId) {
                     myPieceId = newPieceId;
                 }
             });
             
-            // Failsafe: Set the initial name if the sprite already exists when the player joins
             if (player.pieceId && pieceSprites[player.pieceId]) {
                 pieceSprites[player.pieceId].children[2].text = player.nickname;
             }
         });
 
-        // 3. Listen for territory control updates (Painting the map)
-        room.state.controlledTiles.onAdd((teamColor, tileKey) => {
+        // 3. Update your other listeners to use the Callbacks API as well
+        callbacks.onAdd("controlledTiles", (teamColor, tileKey) => {
             updateTileColor(tileKey, teamColor);
-            updateLeaderboard(); // Update score!
-        });
-        room.state.controlledTiles.onChange((teamColor, tileKey) => {
-            updateTileColor(tileKey, teamColor);
-            updateLeaderboard(); // Update score!
+            updateLeaderboard();
         });
 
-        // NEW: Listen for the turn advancing to rotate the priority list
-        room.state.listen("currentTurn", () => {
-            updateLeaderboard(); // Reorder the list!
-        });
-        // 4. Listen for pieces being added to the board
-        room.state.pieces.onAdd((piece, pieceId) => {
+        callbacks.onAdd("pieces", (piece, pieceId) => {
             const sprite = createPieceSprite(piece);
             pieceSprites[pieceId] = sprite;
             piecesContainer.addChild(sprite);
