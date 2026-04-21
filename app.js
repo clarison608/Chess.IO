@@ -185,21 +185,20 @@ async function connect(playerNickname) {
         // 1. Draw the initial grid
         drawGrid();
 
-        // 1. Get the Callbacks handler for your room
-        const callbacks = Colyseus.Callbacks.get(room);
+        
 
         timerUI.style.display = 'block'; // Unhide the timer!
 
-        // 2. Use the handler to listen to the players map
-        callbacks.onAdd("players", (player, sessionId) => {
+       // 2. Go back to listening directly on the state objects!
+        room.state.players.onAdd((player, sessionId) => {
             if (sessionId === room.sessionId) {
                 console.log(`I am on team: ${player.team}`);
                 myPieceId = player.pieceId; 
                 rotateCamera(player.team);
             }
 
-            // In 0.17, you also use the callbacks handler for property changes
-            callbacks.listen(player, "pieceId", (newPieceId, oldPieceId) => {
+            // In JS, you call .listen directly on the schema item
+            player.listen("pieceId", (newPieceId, oldPieceId) => {
                 if (newPieceId && pieceSprites[newPieceId]) {
                     const sprite = pieceSprites[newPieceId];
                     sprite.children[2].text = player.nickname; 
@@ -220,42 +219,40 @@ async function connect(playerNickname) {
             }
         });
 
-        // 3. Update your other listeners to use the Callbacks API as well
-        callbacks.onAdd("controlledTiles", (teamColor, tileKey) => {
+        // 3. Revert your other map listeners
+        room.state.controlledTiles.onAdd((teamColor, tileKey) => {
             updateTileColor(tileKey, teamColor);
             updateLeaderboard();
         });
 
-        callbacks.onAdd("pieces", (piece, pieceId) => {
+        room.state.pieces.onAdd((piece, pieceId) => {
             const sprite = createPieceSprite(piece);
             pieceSprites[pieceId] = sprite;
             piecesContainer.addChild(sprite);
-            // Listen for coordinate changes (Turn Resolution)
+            
+            // Listen for coordinate changes
             piece.position.onChange(() => {
-                // INSTEAD of updating x/y directly, we update the targets!
-                sprite.targetX = (piece.position.x * TILE_SIZE) + (TILE_SIZE / 2);
-                sprite.targetY = (piece.position.y * TILE_SIZE) + (TILE_SIZE / 2);
+                sprite.targetX = (piece.position.x * 32) + (32 / 2); // 32 is TILE_SIZE
+                sprite.targetY = (piece.position.y * 32) + (32 / 2);
                 
-                // If they moved, we want to hide their target indicators immediately
                 if (pieceId === myPieceId) {
                     targetIndicator.visible = false;
                 }
             });
 
-            // NEW: Listen for Lock-In intent changes!
-            // Listen for state changes (like dying, intent changes, or PROMOTING)
             piece.onChange(() => {
-            sprite.visible = piece.isAlive;
+                sprite.visible = piece.isAlive;
+                if (piece.isGhost) {
+                    sprite.alpha = 0.5;
+                    sprite.tint = 0xFF0000; 
+                } else {
+                    sprite.alpha = 1.0;
+                    sprite.tint = 0xFFFFFF;
+                }
+            });
+    
+
             
-            if (piece.isGhost) {
-                sprite.alpha = 0.5; // Make it a semi-transparent "ghost"
-                // Add a pulsing red tint to warn enemies
-                sprite.tint = 0xFF0000; 
-            } else {
-                sprite.alpha = 1.0;
-                sprite.tint = 0xFFFFFF; // Reset to normal
-            }
-        });
 
         room.onMessage("king_force_promotion", (data) => {
     const forceUI = document.getElementById('king-force-ui');
