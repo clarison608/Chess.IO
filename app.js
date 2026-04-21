@@ -2,6 +2,7 @@
 const BOARD_SIZE = 24;
 const TILE_SIZE = 32; // Change this to scale your board up or down
 const BOARD_PIXEL_SIZE = BOARD_SIZE * TILE_SIZE;
+import { Client, Callbacks } from "https://esm.sh/@colyseus/sdk@0.17.11";
 
 let myPieceId = null;
 let room;
@@ -166,7 +167,7 @@ btnHold.onclick = () => {
 
 // --- COLYSEUS SETUP ---
 // Change this to your live server URL when you deploy
-const client = new Colyseus.Client('wss://chess-io-hkjk.onrender.com');
+const client = new Client('wss://chess-io-hkjk.onrender.com');
 
 
 async function connect(playerNickname) {
