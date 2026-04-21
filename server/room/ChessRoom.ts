@@ -731,7 +731,7 @@ this.onMessage("cancel_king_force", (client) => {
             }
         }
     }
-
+    }
 
      update(deltaTime: number) {
         // 1. Do nothing if we are still in the lobby waiting for Kings
