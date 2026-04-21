@@ -476,7 +476,7 @@ export class ChessRoom extends Room<ChessRoomOptions> {
       // The onCreate method runs once when the room/match spins up
     onCreate(options: any) {
         
-        this.setState(new ChessGameState());
+        this.state = (new ChessGameState());
 
         // 2. Load the JSON configuration
         this.loadBoardConfiguration();
