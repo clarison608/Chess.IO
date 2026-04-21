@@ -17,7 +17,7 @@ interface ChessRoomOptions {
     metadata?: any;
 }
 
-export class ChessRoom extends Room<ChessRoomOptions> {
+export class ChessRoom extends Room<ChessGameState>{
     
 
     private pieceRankOrder = ["king", "queen", "bishop", "knight", "rook", "pawn"];
@@ -692,7 +692,7 @@ this.onMessage("cancel_king_force", (client) => {
         this.checkGameStartCondition();
     }
 
-    onLeave(client: Client, code?: number) {
+    onLeave(client: Client, consented?: boolean) { {
         console.log(`${client.sessionId} left the room.`);
 
         // 1. Find the player in the state

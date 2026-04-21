@@ -222,16 +222,13 @@ async function connect(playerNickname) {
             piecesContainer.addChild(sprite);
             
             // Listen for coordinate changes
-            piece.position.onChange(() => {
-                sprite.targetX = (piece.position.x * 32) + (32 / 2); // 32 is TILE_SIZE
+            piece.position.onChange = function(changes) {
+                sprite.targetX = (piece.position.x * 32) + (32 / 2); 
                 sprite.targetY = (piece.position.y * 32) + (32 / 2);
-                
-                if (pieceId === myPieceId) {
-                    targetIndicator.visible = false;
-                }
-            });
+                if (pieceId === myPieceId) targetIndicator.visible = false;
+            };
 
-            piece.onChange(() => {
+            piece.onChange = function(changes) {
                 sprite.visible = piece.isAlive;
                 if (piece.isGhost) {
                     sprite.alpha = 0.5;
@@ -240,7 +237,7 @@ async function connect(playerNickname) {
                     sprite.alpha = 1.0;
                     sprite.tint = 0xFFFFFF;
                 }
-            });
+            };
     
 
             
