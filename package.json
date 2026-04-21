@@ -13,9 +13,13 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "colyseus": "^0.16.0",
-    "@colyseus/schema": "^2.0.33",
+    "@colyseus/schema": "^3.0.0",
     "@colyseus/ws-transport": "^0.16.0",
-    "pixi.js": "^7.2.4"
+    "pixi.js": "^7.2.4",
+    "@colyseus/core": "^0.16.0",
+    "@colyseus/auth": "0.16.0",
+    "@colyseus/monitor": "^0.16.0",
+    "@colyseus/tools": "^0.16.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
