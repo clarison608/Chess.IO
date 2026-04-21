@@ -185,17 +185,22 @@ async function connect(playerNickname) {
         // 1. Draw the initial grid
         drawGrid();
 
+       
+
         
 
         timerUI.style.display = 'block'; // Unhide the timer!
 
        // 2. Go back to listening directly on the state objects!
-        room.state.players.onAdd((player, sessionId) => {
-            if (sessionId === room.sessionId) {
-                console.log(`I am on team: ${player.team}`);
-                myPieceId = player.pieceId; 
-                rotateCamera(player.team);
-            }
+        room.onStateChange.once((state) => {
+    // Initial state received, now set up listeners
+    room.state.players.onAdd((player, sessionId) => {
+        if (sessionId === room.sessionId) {
+            console.log(`I am on team: ${player.team}`);
+            myPieceId = player.pieceId;
+            rotateCamera(player.team);
+        }
+    });
 
             // In JS, you call .listen directly on the schema item
             player.listen("pieceId", (newPieceId, oldPieceId) => {
