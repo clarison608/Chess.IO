@@ -22,7 +22,8 @@
     "@colyseus/schema": "3.0.0-alpha.37",
     "@colyseus/redis-driver": "0.16.0",
     "@colyseus/redis-presence": "0.16.0",
-    "pixi.js": "^7.2.4"
+    "pixi.js": "^7.2.4",
+    "ioredis": "^5.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
