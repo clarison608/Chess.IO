@@ -19,7 +19,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "colyseus": "0.16.0",
-    "@colyseus/schema": "2.0.33",
+    "@colyseus/schema": "3.0.0-alpha.37",
     "@colyseus/redis-driver": "0.16.0",
     "@colyseus/redis-presence": "0.16.0",
     "pixi.js": "^7.2.4"
