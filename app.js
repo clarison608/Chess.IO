@@ -192,43 +192,31 @@ async function connect(playerNickname) {
 
         timerUI.style.display = 'block'; // Unhide the timer!
 
-       // 2. Go back to listening directly on the state objects!
-        room.state.players.onAdd((player, sessionId) => {
+       // 3. Get the Callbacks handler
+        const callbacks = Callbacks.get(room);
+
+        // 4. Listen to the players map
+        callbacks.onAdd("players", (player, sessionId) => {
             if (sessionId === room.sessionId) {
                 console.log(`I am on team: ${player.team}`);
                 myPieceId = player.pieceId; 
                 rotateCamera(player.team);
             }
 
-            // In JS, you call .listen directly on the schema item
-            player.listen("pieceId", (newPieceId, oldPieceId) => {
-                if (newPieceId && pieceSprites[newPieceId]) {
-                    const sprite = pieceSprites[newPieceId];
-                    sprite.children[2].text = player.nickname; 
-                }
-
-                if (oldPieceId && pieceSprites[oldPieceId]) {
-                    const oldSprite = pieceSprites[oldPieceId];
-                    oldSprite.children[2].text = "";
-                }
-
-                if (sessionId === room.sessionId) {
-                    myPieceId = newPieceId;
-                }
+            callbacks.listen(player, "pieceId", (newPieceId, oldPieceId) => {
+                // ... your pieceId changing logic ...
             });
             
-            if (player.pieceId && pieceSprites[player.pieceId]) {
-                pieceSprites[player.pieceId].children[2].text = player.nickname;
-            }
+            // ...
         });
 
-        // 3. Revert your other map listeners
-        room.state.controlledTiles.onAdd((teamColor, tileKey) => {
+        // 5. Listen to the other maps
+        callbacks.onAdd("controlledTiles", (teamColor, tileKey) => {
             updateTileColor(tileKey, teamColor);
             updateLeaderboard();
         });
 
-        room.state.pieces.onAdd((piece, pieceId) => {
+        callbacks.onAdd("pieces", (piece, pieceId) => {
             const sprite = createPieceSprite(piece);
             pieceSprites[pieceId] = sprite;
             piecesContainer.addChild(sprite);
