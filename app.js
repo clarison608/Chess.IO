@@ -167,7 +167,7 @@ btnHold.onclick = () => {
 
 // --- COLYSEUS SETUP ---
 // Change this to your live server URL when you deploy
-const client = new Client('wss://chess-io-hkjk.onrender.com');
+const client = new Colyseus.Client('wss://chess-io-hkjk.onrender.com');
 
 
 async function connect(playerNickname) {
@@ -195,21 +195,34 @@ async function connect(playerNickname) {
        // 3. Get the Callbacks handler
         const callbacks = Callbacks.get(room);
 
-        // 4. Listen to the players map
-        callbacks.onAdd("players", (player, sessionId) => {
-            if (sessionId === room.sessionId) {
-                console.log(`I am on team: ${player.team}`);
-                myPieceId = player.pieceId; 
-                rotateCamera(player.team);
-            }
+       room.state.players.onAdd((player, sessionId) => {
+        if (sessionId === room.sessionId) {
+            console.log(`I am on team: ${player.team}`);
+            myPieceId = player.pieceId; 
+            rotateCamera(player.team);
+        }
 
-            callbacks.listen(player, "pieceId", (newPieceId, oldPieceId) => {
-                // ... your pieceId changing logic ...
-            });
-            
-            // ...
+        player.listen("pieceId", (newPieceId, oldPieceId) => {
+           // If they just claimed a piece, update that piece's text with their name
+                if (newPieceId && pieceSprites[newPieceId]) {
+                    const sprite = pieceSprites[newPieceId];
+                    // children[2] is the nameText we just added!
+                    sprite.children[2].text = player.nickname; 
+                }
+
+                // If they abandoned a piece (e.g., promoted or died), clear the text
+                if (oldPieceId && pieceSprites[oldPieceId]) {
+                    const oldSprite = pieceSprites[oldPieceId];
+                    oldSprite.children[2].text = "";
+                }
+
+                // If this is OUR player, keep our internal tracker updated
+                if (sessionId === room.sessionId) {
+                    myPieceId = newPieceId;
+                }
+
         });
-
+    });
         // 5. Listen to the other maps
         callbacks.onAdd("controlledTiles", (teamColor, tileKey) => {
             updateTileColor(tileKey, teamColor);

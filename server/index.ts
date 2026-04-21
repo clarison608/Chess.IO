@@ -2,7 +2,7 @@ import { Server } from "colyseus";
 import { createServer } from "http";
 import express from "express";
 import cors from "cors";
-import { RedisPresence } from "@colyseus/redis-presence";
+import {RedisPresence} from "@colyseus/redis-presence";
 import { RedisDriver } from "@colyseus/redis-driver";
 import { ChessRoom } from "./room/ChessRoom.js"; 
 
@@ -23,8 +23,7 @@ const port = Number(process.env.PORT) || 2567;
 // 2. Initialize Colyseus (0.16 Native Transport + Redis)
 const gameServer = new Server({
     server: server, // Transport is natively handled here in 0.16
-    driver: new RedisDriver(process.env.REDIS_URL),
-    presence: new RedisPresence(process.env.REDIS_URL)
+    driver: new RedisDriver(process.env.REDIS_URL)
 });
 
 // 3. Define your room
