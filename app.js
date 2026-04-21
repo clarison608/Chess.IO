@@ -193,7 +193,7 @@ async function connect(playerNickname) {
         timerUI.style.display = 'block'; // Unhide the timer!
 
        // 3. Get the Callbacks handler
-        const callbacks = Callbacks.get(room);
+        //const callbacks = Callbacks.get(room);
 
        room.state.players.onAdd((player, sessionId) => {
         if (sessionId === room.sessionId) {
