@@ -2,49 +2,82 @@ import { Schema, MapSchema, ArraySchema, defineTypes } from '@colyseus/schema';
 
 // 1. Define classes WITHOUT decorators
 export class Position extends Schema {
-    x!: number;
-    y!: number;
+    declare x: number;
+    declare y: number;
 }
 
 export class Piece extends Schema {
-    id!: string;
-    type!: string;
-    team!: string;
-    ownerId!: string;
-    position: Position = new Position();
-    isAlive: boolean = true;
-    isIdle: boolean = true;
-    isGhost: boolean = false;
-    startX: number = 0;
-    startY: number = 0;
-    canPromote: boolean = false;
-    hasLockedIn: boolean = false;
-    lockedBy: string = "";
-    lockedTarget: Position = new Position();
+    declare id: string;
+    declare type: string;
+    declare team: string;
+    declare ownerId: string;
+    declare position: Position;
+    declare isAlive: boolean;
+    declare isIdle: boolean;
+    declare isGhost: boolean;
+    declare startX: number;
+    declare startY: number;
+    declare canPromote: boolean;
+    declare hasLockedIn: boolean;
+    declare lockedBy: string;
+    declare lockedTarget: Position;
+
+    constructor() {
+        super();
+        this.position = new Position();
+        this.isAlive = true;
+        this.isIdle = true;
+        this.isGhost = false;
+        this.startX = 0;
+        this.startY = 0;
+        this.canPromote = false;
+        this.hasLockedIn = false;
+        this.lockedBy = "";
+        this.lockedTarget = new Position();
+    }
 }
 
 export class Player extends Schema {
-    sessionId!: string;
-    nickname!: string;
-    team!: string;
-    pieceId!: string;
-    connected: boolean = true;
-    hasLockedIn: boolean = false;
-    turnsUntilRespawn: number = 0;
+    declare sessionId: string;
+    declare nickname: string;
+    declare team: string;
+    declare pieceId: string;
+    declare connected: boolean;
+    declare hasLockedIn: boolean;
+    declare turnsUntilRespawn: number;
+
+    constructor() {
+        super();
+        this.connected = true;
+        this.hasLockedIn = false;
+        this.turnsUntilRespawn = 0;
+    }
 }
 
 export class ChessGameState extends Schema {
-    players = new MapSchema<Player>();
-    pieces = new MapSchema<Piece>();
-    controlledTiles = new MapSchema<string>();
-    status: string = "waiting_for_kings";
-    currentTurn: number = 1;
-    turnEndTime: number = 0;
-    phase: string = "planning";
-    teamPriority = new ArraySchema<string>("black", "white", "blue", "green");
-    stunnedTeams = new MapSchema<number>();
-}
+    declare players: MapSchema<Player>;
+    declare pieces: MapSchema<Piece>;
+    declare controlledTiles: MapSchema<string>;
+    declare status: string;
+    declare currentTurn: number;
+    declare turnEndTime: number;
+    declare phase: string;
+    declare teamPriority: ArraySchema<string>;
+    declare stunnedTeams: MapSchema<number>;
 
+    constructor() {
+        super();
+        this.players = new MapSchema<Player>();
+        this.pieces = new MapSchema<Piece>();
+        this.controlledTiles = new MapSchema<string>();
+        this.status = "waiting_for_kings";
+        this.currentTurn = 1;
+        this.turnEndTime = 0;
+        this.phase = "planning";
+        this.teamPriority = new ArraySchema<string>("black", "white", "blue", "green");
+        this.stunnedTeams = new MapSchema<number>();
+    }
+}
 // 2. Define types explicitly at the bottom of the file
 defineTypes(Position, {
     x: "int8",
